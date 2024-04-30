@@ -13,9 +13,9 @@ def check_events():
 
 def check_controls(surf: Car):
     forward_step = 1
-    angle_step = 1# % 360
-    cos_a = math.cos(surf.angle * (math.pi / 180))
-    sin_a = math.sin(surf.angle * (math.pi / 180))
+    angle_step = 1
+    cos_a = math.cos(surf.angle * (math.pi / 180))      # переход в радианы
+    sin_a = math.sin(surf.angle * (math.pi / 180))      # переход в радианы
     keys = pygame.key.get_pressed()
     if keys[pygame.K_KP_PLUS]:
         pass
@@ -31,21 +31,17 @@ def check_controls(surf: Car):
         # surf.x += forward_step * cos_a
         # surf.y -= forward_step * sin_a
         # surf.translate((forward_step * cos_a, -forward_step * sin_a, 0))
-        surf.translate_pos((forward_step * cos_a, -forward_step * sin_a, 0))
+        surf.translate_pos((forward_step * cos_a, forward_step * sin_a, 0))
+        print(f"cos = {forward_step * cos_a}, sin = {forward_step * sin_a}")
     if keys[pygame.K_s]:
         # surf.x -= forward_step * cos_a
         # surf.y += forward_step * sin_a
         # surf.translate((-forward_step * cos_a, forward_step * sin_a, 0))
-        surf.translate_pos((-forward_step * cos_a, forward_step * sin_a, 0))
+        surf.translate_pos((forward_step * cos_a, forward_step * sin_a, 0))
+        print(f"cos = {forward_step * cos_a}, sin = {forward_step * sin_a}")
     if keys[pygame.K_d]:
-        surf.pre_angle = surf.angle
-        surf.angle -= angle_step
-        # surf.rotate_surf()
+        surf.angle = (surf.angle - angle_step) % 360
         surf.rotate_surf_angle(-angle_step)
-        # surf.rotate_trans(-angle_step)
     if keys[pygame.K_a]:
-        surf.pre_angle = surf.angle
-        surf.angle += angle_step
-        # surf.rotate_surf()
+        surf.angle = (surf.angle + angle_step) % 360
         surf.rotate_surf_angle(angle_step)
-        # surf.rotate_trans(angle_step)

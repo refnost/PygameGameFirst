@@ -31,9 +31,6 @@ class Car(Object):
         self.pos_basic = translate(pos)     # np.eye(3) + [0,2] = pos[0], [1,2] = pos[1]
 
         self.angle = 0
-        self.pre_angle = self.angle     # workaround
-        self.rotation = False           # workaround
-        # self.crop = 0, 0, 0, 0
 
     def movement(self, speed: tuple, angle: int):
         self.pos_basic = np.eye(3) @ rotate_z(angle) @ translate(speed)
@@ -47,18 +44,9 @@ class Car(Object):
             vec = self.pos_rectVert_orig[i] + speed
             self.pos_rectVert[i, :] = np.array(vec)
 
-    def rotate_surf(self):
-        self.pos_basic = np.eye(3) @ rotate_z(self.angle)
-        # print("angle: {0}\nprean: {1}".format(self.angle, self.pre_angle))
-        # print("pos_basic ->\n {0}".format(self.pos_basic))
-        for i in range(len(self.pos_rectVert)):
-            # print("pos_rectVert {0} ->\n {1}".format(i, self.pos_rectVert[i]))
-            vec = self.pos_rectVert_orig[i] @ self.pos_basic
-            # print("vec {0} ->\n {1}".format(i, vec))
-            self.pos_rectVert[i, :] = np.array(vec)
-
     def translate_pos(self, pos: tuple):
         self.pos_basic = self.pos_basic @ translate(pos)
+        print(self.pos_basic)
 
     def rotate_surf_angle(self, angle):
         self.pos_basic = self.pos_basic @ rotate_z(angle)
