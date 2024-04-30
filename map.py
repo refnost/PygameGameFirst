@@ -5,7 +5,7 @@ import numpy as np
 class Map:
     def __init__(self, scr):
         self.scr = scr
-        self.image = pygame.image.load("test_map.bmp")
+        self.image = pygame.image.load("assets/test_map.bmp")
         self.rect = self.image.get_rect()
         # self.scr_rect = self.scr.get_rect()
 

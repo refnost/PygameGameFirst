@@ -18,20 +18,16 @@ class Object:
     def update(self):
         pass
 
-    def rotate_surf(self):
+    def rotate(self, angle: int):
         pass
 
     def draw(self):
         pass
 
-    def moving(self):
+    def translate(self, pos: tuple):
         pass
 
-    def rotate(self, angle: int):#(vec2 point, float angle):
-        # vec2 rotated_point
-        # rotated_point.x = point.x * cos(angle) - point.y * sin(angle)
-        # rotated_point.y = point.x * sin(angle) + point.y * cos(angle)
-        # return rotated_point
+    def translate_to(self, pos: tuple):
         pass
 
 
