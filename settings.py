@@ -1,5 +1,8 @@
 import numpy as np
 from math import *
+import pygame
+from abc import ABCMeta, abstractmethod
+
 
 class Settings:
     def __init__(self):
@@ -11,23 +14,29 @@ class Settings:
 
 
 class Object:
-    def __init__(self, name):
-        self.name = name
-        self.position = np.eye(3)
+    def __init__(self, screen, pos=(0, 0)):
+        self.screen = screen
+        self.pos_basic = translate(pos)                 # np.eye(3) + [0,2] = pos[0], [1,2] = pos[1]
+        self.angle = 0
 
-    def update(self):
+    @abstractmethod
+    def move_to(self, pos: tuple):
         pass
 
+    @abstractmethod
+    def move(self, pos: tuple):
+        pass
+
+    @abstractmethod
     def rotate(self, angle: int):
         pass
 
+    @abstractmethod
+    def update(self):
+        pass
+
+    @abstractmethod
     def draw(self):
-        pass
-
-    def translate(self, pos: tuple):
-        pass
-
-    def translate_to(self, pos: tuple):
         pass
 
 
@@ -39,25 +48,25 @@ def rot_x_y(point: np.array, a: int) -> np.array:
 
 def rotate_z(a: int) -> np.array:
     return np.array([
-        [cos(a * (pi / 180)), sin(a * (pi / 180)), 0],
-        [-sin(a * (pi / 180)), cos(a * (pi / 180)), 0],
-        [0, 0, 1]
+        [cos(a * (pi / 180)), sin(a * (pi / 180)), 0.],
+        [-sin(a * (pi / 180)), cos(a * (pi / 180)), 0.],
+        [0., 0., 1.]
     ])
 
 
 def scale(n) -> np.array:
     return np.array([
-        [n, 0, 0],
-        [0, n, 0],
-        [0, 0, 1]
+        [n, 0., 0.],
+        [0., n, 0.],
+        [0., 0., 1.]
     ])
 
 
 def translate(pos: np.array) -> np.array:
     return np.array([
-        [1, 0, pos[0]],
-        [0, 1, pos[1]],
-        [0, 0, 1]
+        [1., 0., pos[0]],
+        [0., 1., pos[1]],
+        [0., 0., 1.]
     ])
 
 
@@ -65,3 +74,13 @@ def mat_center(vec: np.array) -> np.array:
     x = sum(vec[:, 0]) / len(vec)
     y = sum(vec[:, 1]) / len(vec)
     return np.array([x, y, 1])
+
+
+def load_asset(path: str) -> pygame.Surface:
+    image = None
+    try:
+        image = pygame.image.load(path)
+    except FileNotFoundError:
+        image = pygame.image.load("assets/error_stub.png")
+    finally:
+        return image
