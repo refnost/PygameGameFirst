@@ -11,8 +11,9 @@ class Camera(Object):
 
     def update(self):
         pass
+        # self.pos_basic[:2, 2] = vec
 
-    def draw(self):
+    def draw(self, array):
         pass
 
 

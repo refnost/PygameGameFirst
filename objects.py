@@ -26,8 +26,11 @@ class Map(Object):
         self.rect = self.image.get_rect()
         self.rect.center = self.pos_basic[:2, 2].copy()
 
-    def draw(self):
+    def draw(self, camera):
+        temptransform = self.rect.copy()
+        self.rect.center += camera
         self.screen.blit(self.image, self.rect)
+        self.rect = temptransform
 
 
 class Car(Object):
@@ -65,9 +68,13 @@ class Car(Object):
             vec = self.pos_basic @ self.pos_rectVert_orig[i]
             self.pos_rectVert[i, :] = np.array(vec)
 
-    def draw(self):
-        pygame.draw.polygon(self.screen, (0, 0, 200), self.pos_rectVert[:, 0:2])
+    def draw(self, camera):
+        pygame.draw.polygon(self.screen, (0, 0, 200), self.pos_rectVert[:, 0:2] + camera)
+
+        temptransform = self.rect.copy()
+        self.rect.center += camera
         self.screen.blit(self.image, self.rect)
+        self.rect = temptransform
 
 
 class FriendCar(Object):
@@ -124,5 +131,5 @@ class FriendCar(Object):
             vec = self.pos_basic @ self.pos_rectVert_orig[i]
             self.pos_rectVert[i, :] = np.array(vec)
 
-    def draw(self):
-        pygame.draw.polygon(self.screen, (0, 0, 200), self.pos_rectVert[:, 0:2])
+    def draw(self, camera):
+        pygame.draw.polygon(self.screen, (0, 0, 200), self.pos_rectVert[:, 0:2] + camera)

@@ -24,7 +24,7 @@ class Game:
         pygame.display.set_caption(self.sett.caption_name)
         self.clock = pygame.time.Clock()
 
-        self.camera = Camera(self.screen)
+        self.camera = Camera(self.screen, (self.sett.scr_width / 2, self.sett.scr_height / 2))
         self.objects = []
         self.selected_obj = 1
         self.create_objects()
@@ -36,10 +36,11 @@ class Game:
         self.objects.append(FriendCar(self.screen, (100, 45)))
 
     def draw(self):
-        # self.map.draw()
+        # self.camera.update(self.objects[self.selected_obj])
+        cam_vec = self.camera.center - self.camera.pos_basic[:2, 2]
         for obj in self.objects:
             obj.update()
-            obj.draw()
+            obj.draw(cam_vec)
 
     def run(self):
         game = True
