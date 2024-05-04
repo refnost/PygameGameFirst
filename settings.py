@@ -19,6 +19,9 @@ class Object:
         self.pos_basic = translate(pos)                 # np.eye(3) + [0,2] = pos[0], [1,2] = pos[1]
         self.angle = 0
 
+    def get_basic(self):
+        return self.pos_basic
+
     def move_to(self, pos: tuple):
         self.pos_basic[:2, 2] = translate(pos)[:2, 2]
 

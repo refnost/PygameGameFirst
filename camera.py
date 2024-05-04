@@ -1,6 +1,21 @@
 from settings import *
 
 
+class Camera(Object):
+    def __init__(self, screen, pos=(0, 0)):
+        super(Camera, self).__init__(screen, pos)
+        self.screen_rect = self.screen.get_rect()
+
+        size = self.screen_rect.size
+        self.center = (-size[0] / 2, size[1] / 2)
+
+    def update(self):
+        pass
+
+    def draw(self):
+        pass
+
+
 class CameraOld(Object):
     def __init__(self, screen, pos=(0, 0)):
         super(CameraOld, self).__init__("camera")

@@ -3,6 +3,7 @@ from settings import Settings
 # from map import Map
 from objects import *
 from functions import *
+from camera import *
 
 # from decimal import Decimal     # to correct inaccuracies like 0.1 + 0.1 + 0.1 == 0.30000000000000004
 
@@ -22,6 +23,8 @@ class Game:
         self.screen.fill(self.sett.bg_color)
         pygame.display.set_caption(self.sett.caption_name)
         self.clock = pygame.time.Clock()
+
+        self.camera = Camera(self.screen)
         self.objects = []
         self.selected_obj = 1
         self.create_objects()
@@ -31,7 +34,6 @@ class Game:
         self.objects.append(Map(self.screen))
         self.objects.append(Car(self.screen, (self.sett.scr_width / 2, self.sett.scr_height / 2)))
         self.objects.append(FriendCar(self.screen, (100, 45)))
-        self.objects.append(Camera(self.screen))
 
     def draw(self):
         # self.map.draw()
