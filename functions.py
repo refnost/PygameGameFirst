@@ -1,7 +1,7 @@
 import pygame
 import math
 from settings import *
-from car import Car
+from objects import Car
 
 
 def check_events():
@@ -14,9 +14,9 @@ def check_events():
 def check_global_controls(num: int) -> int:
     keys = pygame.key.get_pressed()
     if keys[pygame.K_KP_PLUS]:
-        num = 0
-    if keys[pygame.K_KP_MINUS]:
         num = 1
+    if keys[pygame.K_KP_MINUS]:
+        num = 2
     return num
 
 

@@ -1,14 +1,16 @@
+from settings import *
 import pygame
 import numpy as np
 
 
-class Map:
-    def __init__(self, scr):
-        self.scr = scr
-        self.image = pygame.image.load("assets/test_map.bmp")
+class MapOld:
+    def __init__(self, screen):
+        self.screen = screen
+        self.image = load_asset("assets/test_map.bmp")
         self.rect = self.image.get_rect()
         # self.scr_rect = self.scr.get_rect()
 
+        # для линейки
         self.font = pygame.font.SysFont('Arial', 10, bold=True)
         # pygame.font.Font('C:\\Windows\\Fonts\\HOAMAI1T.ttf', 30)
 
@@ -22,8 +24,13 @@ class Map:
             k += 1
         self.n = k
 
-    def draw(self):
-        self.scr.blit(self.image, self.rect)
-        for i in range(self.n):
-            self.scr.blit(self.text[i], self.text_rect[i])
+    # def update(self):
+    #     self.rect.center = self.pos_basic[:2, 2].copy()
+    #     self.image = pygame.transform.rotate(self.src_image, self.angle)
+    #     self.rect = self.image.get_rect()
+    #     self.rect.center = self.pos_basic[:2, 2].copy()
 
+    def draw(self):
+        self.screen.blit(self.image, self.rect)
+        for i in range(self.n):
+            self.screen.blit(self.text[i], self.text_rect[i])

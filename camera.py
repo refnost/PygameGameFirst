@@ -1,9 +1,9 @@
 from settings import *
 
 
-class Camera(Object):
+class CameraOld(Object):
     def __init__(self, screen, pos=(0, 0)):
-        super(Camera, self).__init__("camera")
+        super(CameraOld, self).__init__("camera")
         self.screen = screen
         self.screen_rect = self.screen.get_rect()
         self.rect.center = pos

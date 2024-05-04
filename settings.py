@@ -19,17 +19,15 @@ class Object:
         self.pos_basic = translate(pos)                 # np.eye(3) + [0,2] = pos[0], [1,2] = pos[1]
         self.angle = 0
 
-    @abstractmethod
     def move_to(self, pos: tuple):
-        pass
+        self.pos_basic[:2, 2] = translate(pos)[:2, 2]
 
-    @abstractmethod
     def move(self, pos: tuple):
-        pass
+        self.pos_basic[:2, 2] += translate(pos)[:2, 2]  # к текущей позиции прибавляется перемещение на pos единиц
+        # self.pos_basic = self.pos_basic @ translate(pos)    # Надо сделать нормальной мат операцией
 
-    @abstractmethod
     def rotate(self, angle: int):
-        pass
+        self.pos_basic = self.pos_basic @ rotate_z(angle)
 
     @abstractmethod
     def update(self):
