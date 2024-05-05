@@ -37,7 +37,7 @@ class Object:
         pass
 
     @abstractmethod
-    def draw(self, array):
+    def draw(self, vector):
         pass
 
 

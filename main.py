@@ -30,13 +30,12 @@ class Game:
         self.create_objects()
 
     def create_objects(self):
-        # self.map = Map(self.screen)
         self.objects.append(Map(self.screen))
         self.objects.append(Car(self.screen, (self.sett.scr_width / 2, self.sett.scr_height / 2)))
         self.objects.append(FriendCar(self.screen, (100, 45)))
 
     def draw(self):
-        # self.camera.update(self.objects[self.selected_obj])
+        self.camera.update(self.objects[self.selected_obj])
         cam_vec = self.camera.center - self.camera.pos_basic[:2, 2]
         for obj in self.objects:
             obj.update()
