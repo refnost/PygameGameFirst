@@ -7,8 +7,6 @@ def check_events():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            return pygame.mouse.get_pos()
     return True
 
 

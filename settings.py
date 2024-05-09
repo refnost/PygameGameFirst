@@ -47,10 +47,13 @@ class Object:
 
 
 class MyButton(Object):
-    def __init__(self, menu_surf: pygame.Surface, pos: tuple = (0, 0), scaling: int = 5,  text: str = ""):
-        super(MyButton, self).__init__(menu_surf, pos)
-        size = (np.array(self.surf.get_rect().size) / 10) * scaling
-        size[1] *= 0.3      # height
+    def __init__(self, surf: pygame.Surface, func, pos: tuple = (0, 0), scaling: int = 5,  text: str = ""):
+        super(MyButton, self).__init__(surf, pos)
+        self.function = func
+
+        self.size = (np.array(self.surf.get_rect().size) / 10) * scaling
+        self.size[1] *= 0.3      # height
+        size = self.size
         bevel = 7
         self.pos_rectVert = np.array([
             # [-size[0]/2, -size[1]/2, 1],    # X.topleft     Y.topleft       1
@@ -71,51 +74,41 @@ class MyButton(Object):
         ])
         self.pos_rectVert_orig = self.pos_rectVert.copy()
 
-        text_size = scaling * 10
-        self.font = pygame.font.SysFont('Arial', text_size, bold=True)
-        self.text_image = self.font.render(text, True, pygame.Color('white'))
-        self.text_rect = self.text_image.get_rect()
-        self.text_rect.center = pos
+        self.text = MyText(self.surf, text, pos, scaling)
 
-    def check_col(self):
-        # size = self.get_rect()
-        pass
+    def check_col(self, m_pos):
+        if m_pos != (-1, -1):
+            x, y = self.pos_basic[0, 2] - self.size[0] / 2, self.pos_basic[1, 2] - self.size[1] / 2
+            if x <= m_pos[0] <= x + self.size[0] and y <= m_pos[1] <= y + self.size[1]:
+                self.function()
 
     def update(self):
         for i in range(len(self.pos_rectVert)):
             vec = self.pos_basic @ self.pos_rectVert_orig[i]
             self.pos_rectVert[i, :] = np.array(vec)
-        self.text_rect.center = self.pos_basic[:2, 2]
+        self.text.update_pos(self.pos_basic[:2, 2])
 
     def draw(self, cam_vec):
         pygame.draw.polygon(self.surf, (100, 0, 200), self.pos_rectVert[:, 0:2])
-        self.surf.blit(self.text_image, self.text_rect)
+        self.text.draw()
 
 
 class MyText:
-    def __init__(self, surf: pygame.Surface, text: str = "Empty", pos: tuple = (0, 0), scaling: int = 5):
+    def __init__(self, surf: pygame.Surface, text: str = "Empty", pos: tuple = (0, 0), scaling: int = 5,
+                 color: tuple = (255, 255, 255)):
         self.surf = surf
         self.text = text
         text_size = scaling * 10
         self.font = pygame.font.SysFont('Arial', text_size, bold=True)
-        self.text_image = self.font.render(text, True, pygame.Color('white'))
+        self.text_image = self.font.render(text, True, color)
         self.text_rect = self.text_image.get_rect()
         self.text_rect.center = pos
-
-    def set_text(self, text):
-        self.text = text
 
     def update_pos(self, pos):
         self.text_rect.center = pos
 
-    def draw(self, cam_vec: int = 0):
-        if cam_vec:
-            temp = self.text_rect.center
-            self.text_rect.center += cam_vec
-            self.surf.blit(self.text_image, self.text_rect)
-            self.text_rect.center = temp
-        else:
-            self.surf.blit(self.text_image, self.text_rect)
+    def draw(self):
+        self.surf.blit(self.text_image, self.text_rect)
 
 
 def rot_x_y(point: np.array, a: int) -> np.array:
@@ -162,3 +155,15 @@ def load_asset(path: str) -> pygame.Surface:
         image = pygame.image.load("assets/error_stub.png")
     finally:
         return image
+
+
+def start_game_b():
+    print("Game started by button")
+
+
+def exit_game_b():
+    print("Game exit by button")
+
+
+def options_b():
+    print("Open options by button")

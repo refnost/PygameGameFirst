@@ -4,16 +4,7 @@ from objects import *
 from functions import *
 from camera import *
 from interface import *
-
-
 # from decimal import Decimal     # to correct inaccuracies like 0.1 + 0.1 + 0.1 == 0.30000000000000004
-
-# from camera import Camera
-# камера и машина это два объектая которые независимо
-# друг от друга будут перемещаться по карте.
-# камера меньше карты, можно отрисовывать не всю карту а по чанкам.
-# при удерживании кнопки движения, чем больше подряд идет кнопка движения,
-# тем быстрее движение
 
 
 class Game:
@@ -49,15 +40,15 @@ class Game:
         for obj in self.objects:
             obj.update()
             obj.draw(cam_vec)
+        self.mouse_pos = check_mouse()
         for i in self.interface:
-            i.update()
+            i.update(self.mouse_pos)
             i.draw(cam_vec)
 
     def run(self):
         game = True
         while game:
-            game = check_events()       # from functions
-            self.mouse_pos = check_mouse()
+            game = check_events()
             self.selected_obj = check_global_controls(self.selected_obj)
             check_controls(self.objects[self.selected_obj])
             self.draw()
