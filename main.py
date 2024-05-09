@@ -1,9 +1,10 @@
 import pygame
 from settings import Settings
-# from map import Map
 from objects import *
 from functions import *
 from camera import *
+from interface import *
+
 
 # from decimal import Decimal     # to correct inaccuracies like 0.1 + 0.1 + 0.1 == 0.30000000000000004
 
@@ -23,11 +24,19 @@ class Game:
         self.screen.fill(self.sett.bg_color)
         pygame.display.set_caption(self.sett.caption_name)
         self.clock = pygame.time.Clock()
+        self.mouse_pos = (-1, -1)
 
         self.camera = Camera(self.screen, (self.sett.scr_width / 2, self.sett.scr_height / 2))
+
+        self.interface = []     # можно ключ-значение, но пока что обычный массив
+        self.create_interface()
+
         self.objects = []
         self.selected_obj = 1
         self.create_objects()
+
+    def create_interface(self):
+        self.interface.append(Menu(self.screen))
 
     def create_objects(self):
         self.objects.append(Map(self.screen))
@@ -40,11 +49,15 @@ class Game:
         for obj in self.objects:
             obj.update()
             obj.draw(cam_vec)
+        for i in self.interface:
+            i.update()
+            i.draw(cam_vec)
 
     def run(self):
         game = True
         while game:
             game = check_events()       # from functions
+            self.mouse_pos = check_mouse()
             self.selected_obj = check_global_controls(self.selected_obj)
             check_controls(self.objects[self.selected_obj])
             self.draw()

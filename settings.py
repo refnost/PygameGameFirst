@@ -14,10 +14,12 @@ class Settings:
 
 
 class Object:
-    def __init__(self, screen, pos=(0, 0)):
-        self.screen = screen
+    def __init__(self, surf: pygame.Surface, pos: tuple = (0, 0)):
+        self.surf = surf
         self.pos_basic = translate(pos)                 # np.eye(3) + [0,2] = pos[0], [1,2] = pos[1]
-        self.angle = 0
+        # масштаб, поворот (и скос) для точек и позиция для точек и картинок
+        self.angle = 0              # угол для картинок
+        self.scale_param = 1        # масштаб для картинок
 
     def get_basic(self):
         return self.pos_basic
@@ -32,6 +34,9 @@ class Object:
     def rotate(self, angle: int):
         self.pos_basic = self.pos_basic @ rotate_z(angle)
 
+    def scaling(self, s: float):
+        self.pos_basic = self.pos_basic @ scale(s)
+
     @abstractmethod
     def update(self):
         pass
@@ -39,6 +44,78 @@ class Object:
     @abstractmethod
     def draw(self, vector):
         pass
+
+
+class MyButton(Object):
+    def __init__(self, menu_surf: pygame.Surface, pos: tuple = (0, 0), scaling: int = 5,  text: str = ""):
+        super(MyButton, self).__init__(menu_surf, pos)
+        size = (np.array(self.surf.get_rect().size) / 10) * scaling
+        size[1] *= 0.3      # height
+        bevel = 7
+        self.pos_rectVert = np.array([
+            # [-size[0]/2, -size[1]/2, 1],    # X.topleft     Y.topleft       1
+            [-size[0] / 2, -size[1] / 2 + bevel, 1],
+            [-size[0] / 2 + bevel, -size[1] / 2, 1],
+
+            # [size[0] / 2, -size[1] / 2, 1],  # X.topright    Y.topright      1
+            [size[0] / 2 - bevel, -size[1] / 2, 1],
+            [size[0] / 2, -size[1] / 2 + bevel, 1],
+
+            # [size[0] / 2, size[1] / 2, 1],  # X.bottomright Y.bottomright   1
+            [size[0] / 2, size[1] / 2 - bevel, 1],
+            [size[0] / 2 - bevel, size[1] / 2, 1],
+
+            # [-size[0]/2, size[1]/2, 1],     # X.bottomleft  Y.bottomleft    1
+            [-size[0] / 2 + bevel, size[1] / 2, 1],
+            [-size[0] / 2, size[1] / 2 - bevel, 1]
+        ])
+        self.pos_rectVert_orig = self.pos_rectVert.copy()
+
+        text_size = scaling * 10
+        self.font = pygame.font.SysFont('Arial', text_size, bold=True)
+        self.text_image = self.font.render(text, True, pygame.Color('white'))
+        self.text_rect = self.text_image.get_rect()
+        self.text_rect.center = pos
+
+    def check_col(self):
+        # size = self.get_rect()
+        pass
+
+    def update(self):
+        for i in range(len(self.pos_rectVert)):
+            vec = self.pos_basic @ self.pos_rectVert_orig[i]
+            self.pos_rectVert[i, :] = np.array(vec)
+        self.text_rect.center = self.pos_basic[:2, 2]
+
+    def draw(self, cam_vec):
+        pygame.draw.polygon(self.surf, (100, 0, 200), self.pos_rectVert[:, 0:2])
+        self.surf.blit(self.text_image, self.text_rect)
+
+
+class MyText:
+    def __init__(self, surf: pygame.Surface, text: str = "Empty", pos: tuple = (0, 0), scaling: int = 5):
+        self.surf = surf
+        self.text = text
+        text_size = scaling * 10
+        self.font = pygame.font.SysFont('Arial', text_size, bold=True)
+        self.text_image = self.font.render(text, True, pygame.Color('white'))
+        self.text_rect = self.text_image.get_rect()
+        self.text_rect.center = pos
+
+    def set_text(self, text):
+        self.text = text
+
+    def update_pos(self, pos):
+        self.text_rect.center = pos
+
+    def draw(self, cam_vec: int = 0):
+        if cam_vec:
+            temp = self.text_rect.center
+            self.text_rect.center += cam_vec
+            self.surf.blit(self.text_image, self.text_rect)
+            self.text_rect.center = temp
+        else:
+            self.surf.blit(self.text_image, self.text_rect)
 
 
 def rot_x_y(point: np.array, a: int) -> np.array:

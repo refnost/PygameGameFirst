@@ -9,27 +9,27 @@ class Map(Object):
 
         image = load_asset("assets/test_map.bmp")
         size = image.get_rect().size
-
-        image = pygame.transform.scale(image, size)
+        image = pygame.transform.scale(image, [i * 2 for i in size])
 
         self.src_image = pygame.transform.rotate(image, 0)       # Для коректного поворота изображения
 
         self.image = self.src_image
         self.rect = self.image.get_rect()
-        self.screen_rect = self.screen.get_rect()
+        self.screen_rect = self.surf.get_rect()
 
         self.rect.center = self.pos_basic[:2, 2]
 
     def update(self):
         self.rect.center = self.pos_basic[:2, 2].copy()
         self.image = pygame.transform.rotate(self.src_image, self.angle)
+        self.image = pygame.transform.scale(self.image, [i * self.scale_param for i in self.image.get_rect().size])
         self.rect = self.image.get_rect()
         self.rect.center = self.pos_basic[:2, 2].copy()
 
     def draw(self, cam_vec):
         temp = self.rect.center
         self.rect.center += cam_vec
-        self.screen.blit(self.image, self.rect)
+        self.surf.blit(self.image, self.rect)
         self.rect.center = temp
 
 
@@ -46,7 +46,7 @@ class Car(Object):
 
         self.image = self.src_image
         self.rect = self.image.get_rect()
-        self.screen_rect = self.screen.get_rect()
+        self.screen_rect = self.surf.get_rect()
 
         self.rect.center = self.pos_basic[:2, 2]
 
@@ -60,7 +60,10 @@ class Car(Object):
 
     def update(self):
         self.rect.center = self.pos_basic[:2, 2].copy()
+
         self.image = pygame.transform.rotate(self.src_image, self.angle)
+        self.image = pygame.transform.scale(self.image, [i * self.scale_param for i in self.image.get_rect().size])
+
         self.rect = self.image.get_rect()
         self.rect.center = self.pos_basic[:2, 2].copy()
 
@@ -69,10 +72,10 @@ class Car(Object):
             self.pos_rectVert[i, :] = np.array(vec)
 
     def draw(self, cam_vec):
-        pygame.draw.polygon(self.screen, (0, 0, 200), self.pos_rectVert[:, 0:2] + cam_vec)
+        # pygame.draw.polygon(self.screen, (0, 0, 200), self.pos_rectVert[:, 0:2] + cam_vec)
         temp = self.rect.center
         self.rect.center += cam_vec
-        self.screen.blit(self.image, self.rect)
+        self.surf.blit(self.image, self.rect)
         self.rect.center = temp
 
 
@@ -82,7 +85,7 @@ class FriendCar(Object):
 
         size = (100, 45)
 
-        self.screen_rect = self.screen.get_rect()
+        self.screen_rect = self.surf.get_rect()
 
         self.pos_rectVert = np.array([
             # [-size[0]/2, -size[1]/2, 1],    # X.topleft     Y.topleft       1
@@ -131,4 +134,4 @@ class FriendCar(Object):
             self.pos_rectVert[i, :] = np.array(vec)
 
     def draw(self, cam_vec):
-        pygame.draw.polygon(self.screen, (0, 0, 200), self.pos_rectVert[:, 0:2] + cam_vec)
+        pygame.draw.polygon(self.surf, (0, 0, 200), self.pos_rectVert[:, 0:2] + cam_vec)
