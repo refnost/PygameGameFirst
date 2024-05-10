@@ -16,13 +16,18 @@ class Menu:
     def create_buttons(self):
         screen = self.screen.get_rect().size
         self.buttons.append(MyButton(self.screen, start_game_b, (screen[0] / 2, screen[1] / 2 - 70), 3, "start"))
-        self.buttons.append(MyButton(self.screen, exit_game_b, (screen[0] / 2, screen[1] / 2), 3, "options"))
-        self.buttons.append(MyButton(self.screen, options_b, (screen[0] / 2, screen[1] / 2 + 70), 3, "exit"))
+        self.buttons.append(MyButton(self.screen, options_b, (screen[0] / 2, screen[1] / 2), 3, "options"))
+        self.buttons.append(MyButton(self.screen, exit_game_b, (screen[0] / 2, screen[1] / 2 + 70), 3, "exit"))
 
-    def update(self, mouse_pos):
-        for button in self.buttons:
-            button.check_col(mouse_pos)
-            button.update()
+    def update(self, click_mouse: bool):
+        if click_mouse:
+            pos = pygame.mouse.get_pos()
+            for button in self.buttons:
+                button.check_col(pos)
+                button.update()
+        else:
+            for button in self.buttons:
+                button.update()
 
     def draw(self, cam_vec):
         for button in self.buttons:

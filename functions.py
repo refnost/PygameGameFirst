@@ -3,18 +3,16 @@ import math
 from settings import *
 
 
-def check_events():
+def check_events(s):
+    states = s
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            return False
-    return True
-
-
-def check_mouse() -> tuple:
-    for event in pygame.event.get():
+            states["game"] = False
         if event.type == pygame.MOUSEBUTTONDOWN:
-            return pygame.mouse.get_pos()
-    return -1, -1
+            states["mouse"] = True
+        # if pygame.key.get_pressed()[pygame.K_ESCAPE]:
+        #     states["menu"] = True
+    return states
 
 
 def check_global_controls(num: int) -> int:

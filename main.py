@@ -24,7 +24,9 @@ class Game:
 
         self.objects = []
         self.selected_obj = 1
-        self.create_objects()
+        # self.create_objects()
+
+        self.states = {"game": True, "mouse": False, "menu": True}
 
     def create_interface(self):
         self.interface.append(Menu(self.screen))
@@ -34,24 +36,29 @@ class Game:
         self.objects.append(Car(self.screen, (self.sett.scr_width / 2, self.sett.scr_height / 2)))
         self.objects.append(FriendCar(self.screen, (100, 45)))
 
-    def draw(self):
-        self.camera.update(self.objects[self.selected_obj])
+    def start_gameplay(self):
+        self.create_objects()
+        self.states["menu"] = False
+
+    def draw(self, states):
+        if not self.states["menu"]:
+            self.camera.update(self.objects[self.selected_obj])
         cam_vec = self.camera.center - self.camera.pos_basic[:2, 2]
         for obj in self.objects:
             obj.update()
             obj.draw(cam_vec)
-        self.mouse_pos = check_mouse()
         for i in self.interface:
-            i.update(self.mouse_pos)
+            i.update(states["mouse"])
             i.draw(cam_vec)
+        self.states["mouse"] = False
 
     def run(self):
-        game = True
-        while game:
-            game = check_events()
-            self.selected_obj = check_global_controls(self.selected_obj)
-            check_controls(self.objects[self.selected_obj])
-            self.draw()
+        while self.states["game"]:
+            self.states = check_events(self.states)
+            if not self.states["menu"]:
+                self.selected_obj = check_global_controls(self.selected_obj)
+                check_controls(self.objects[self.selected_obj])
+            self.draw(self.states)
             self.clock.tick(self.sett.FPS)
             pygame.display.set_caption(str(self.clock.get_fps()))
             pygame.display.flip()

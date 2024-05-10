@@ -50,6 +50,7 @@ class MyButton(Object):
     def __init__(self, surf: pygame.Surface, func, pos: tuple = (0, 0), scaling: int = 5,  text: str = ""):
         super(MyButton, self).__init__(surf, pos)
         self.function = func
+        self.clicked = False
 
         self.size = (np.array(self.surf.get_rect().size) / 10) * scaling
         self.size[1] *= 0.3      # height
@@ -81,6 +82,8 @@ class MyButton(Object):
             x, y = self.pos_basic[0, 2] - self.size[0] / 2, self.pos_basic[1, 2] - self.size[1] / 2
             if x <= m_pos[0] <= x + self.size[0] and y <= m_pos[1] <= y + self.size[1]:
                 self.function()
+                return True
+        return False
 
     def update(self):
         for i in range(len(self.pos_rectVert)):
