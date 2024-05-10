@@ -12,6 +12,7 @@ class Menu:
         self.scale_param = 1
         self.buttons = []
         self.create_buttons()
+        self.state = {}
 
     def create_buttons(self):
         screen = self.screen.get_rect().size
@@ -20,10 +21,13 @@ class Menu:
         self.buttons.append(MyButton(self.screen, exit_game_b, (screen[0] / 2, screen[1] / 2 + 70), 3, "exit"))
 
     def update(self, click_mouse: bool):
+        self.state = {}
         if click_mouse:
             pos = pygame.mouse.get_pos()
             for button in self.buttons:
-                button.check_col(pos)
+                state = button.check_col(pos)
+                if state != {}:
+                    self.state = state
                 button.update()
         else:
             for button in self.buttons:
@@ -32,3 +36,6 @@ class Menu:
     def draw(self, cam_vec):
         for button in self.buttons:
             button.draw(cam_vec)
+
+    def get_states(self):
+        return self.state

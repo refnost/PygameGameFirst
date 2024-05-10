@@ -26,7 +26,7 @@ class Game:
         self.selected_obj = 1
         # self.create_objects()
 
-        self.states = {"game": True, "mouse": False, "menu": True}
+        self.states = {"game": True, "mouse": False, "menu": True, "start": False, "stop": False}
 
     def create_interface(self):
         self.interface.append(Menu(self.screen))
@@ -39,6 +39,7 @@ class Game:
     def start_gameplay(self):
         self.create_objects()
         self.states["menu"] = False
+        self.interface.clear()
 
     def draw(self, states):
         if not self.states["menu"]:
@@ -54,10 +55,19 @@ class Game:
 
     def run(self):
         while self.states["game"]:
-            self.states = check_events(self.states)
-            if not self.states["menu"]:
+            self.states = check_events(self.states)                 # проверка нажатий и закрывания окна
+            if self.states["stop"]:
+                self.states.update({"start": False, "menu": True, "stop": False})
+                self.objects.clear()
+                self.create_interface()
+            if self.states["menu"]:
+                self.states.update(self.interface[0].get_states())  # получение состояний от нажатий на кнопки меню
+            else:
                 self.selected_obj = check_global_controls(self.selected_obj)
                 check_controls(self.objects[self.selected_obj])
+            if self.states["start"]:
+                self.states["start"] = False
+                self.start_gameplay()
             self.draw(self.states)
             self.clock.tick(self.sett.FPS)
             pygame.display.set_caption(str(self.clock.get_fps()))

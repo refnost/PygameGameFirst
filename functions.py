@@ -10,8 +10,8 @@ def check_events(s):
             states["game"] = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             states["mouse"] = True
-        # if pygame.key.get_pressed()[pygame.K_ESCAPE]:
-        #     states["menu"] = True
+        if pygame.key.get_pressed()[pygame.K_ESCAPE]:
+            states["stop"] = True
     return states
 
 

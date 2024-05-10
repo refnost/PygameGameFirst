@@ -77,13 +77,12 @@ class MyButton(Object):
 
         self.text = MyText(self.surf, text, pos, scaling)
 
-    def check_col(self, m_pos):
+    def check_col(self, m_pos) -> dict:
         if m_pos != (-1, -1):
             x, y = self.pos_basic[0, 2] - self.size[0] / 2, self.pos_basic[1, 2] - self.size[1] / 2
             if x <= m_pos[0] <= x + self.size[0] and y <= m_pos[1] <= y + self.size[1]:
-                self.function()
-                return True
-        return False
+                return self.function()
+        return {}
 
     def update(self):
         for i in range(len(self.pos_rectVert)):
@@ -162,11 +161,14 @@ def load_asset(path: str) -> pygame.Surface:
 
 def start_game_b():
     print("Game started by button")
+    return {"menu": False, "start": True}
 
 
 def exit_game_b():
     print("Game exit by button")
+    return {"game": False}
 
 
 def options_b():
     print("Open options by button")
+    return {}
