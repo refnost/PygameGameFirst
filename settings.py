@@ -9,7 +9,7 @@ class Settings:
         self.scr_width = 500
         self.scr_height = 500
         self.bg_color = (0, 150, 255)
-        self.caption_name = "Кошки мышки"
+        self.caption_name = "Some of game"
         self.FPS = 60
 
 
@@ -81,6 +81,7 @@ class MyButton(Object):
         if m_pos != (-1, -1):
             x, y = self.pos_basic[0, 2] - self.size[0] / 2, self.pos_basic[1, 2] - self.size[1] / 2
             if x <= m_pos[0] <= x + self.size[0] and y <= m_pos[1] <= y + self.size[1]:
+                self.scaling(1.1)
                 return self.function()
         return {}
 
@@ -111,6 +112,43 @@ class MyText:
 
     def draw(self):
         self.surf.blit(self.text_image, self.text_rect)
+
+
+class InterfaceButtons:
+    def __init__(self, screen, pos=(0, 0)):
+        # origin in (0, 0)
+        self.screen = screen
+        self.pos_basic = translate(pos)
+        self.angle = 0
+        self.scale_param = 1
+        self.buttons = []
+        self.create_buttons()
+        self.state = {}
+
+    def update(self, click_mouse: bool):
+        self.state = {}
+        if click_mouse:
+            pos = pygame.mouse.get_pos()
+            for button in self.buttons:
+                state = button.check_col(pos)
+                if state != {}:
+                    self.state = state
+                button.update()
+        else:
+            for button in self.buttons:
+                button.update()
+
+    def draw(self, cam_vec):
+        self.screen.fill((0, 150, 255))
+        for button in self.buttons:
+            button.draw(cam_vec)
+
+    def get_states(self):
+        return self.state
+
+    @abstractmethod
+    def create_buttons(self):
+        pass
 
 
 def rot_x_y(point: np.array, a: int) -> np.array:
@@ -171,4 +209,19 @@ def exit_game_b():
 
 def options_b():
     print("Open options by button")
+    return {"options": True}
+
+
+def option1_b():
+    print("Open option 1 by button")
+    return {}
+
+
+def option2_b():
+    print("Open option 2 by button")
+    return {}
+
+
+def option3_b():
+    print("Open option 3 by button")
     return {}

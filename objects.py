@@ -1,5 +1,3 @@
-import numpy as np
-import pygame
 from settings import *
 
 
@@ -8,8 +6,8 @@ class Map(Object):
         super(Map, self).__init__(screen, pos)
 
         image = load_asset("assets/test_map.bmp")
-        size = image.get_rect().size
-        image = pygame.transform.scale(image, [i * 2 for i in size])
+        self.size = image.get_rect().size
+        image = pygame.transform.scale(image, [i * 2 for i in self.size])
 
         self.src_image = pygame.transform.rotate(image, 0)       # Для коректного поворота изображения
 
@@ -135,3 +133,28 @@ class FriendCar(Object):
 
     def draw(self, cam_vec):
         pygame.draw.polygon(self.surf, (0, 0, 200), self.pos_rectVert[:, 0:2] + cam_vec)
+
+
+class Target(Object):
+    def __init__(self, screen, pos=(0, 0)):
+        super(Target, self).__init__(screen, pos)
+
+        size = (40, 40)
+
+        self.screen_rect = self.surf.get_rect()
+
+        self.pos_rectVert = np.array([
+            [-size[0]/2, -size[1]/2, 1],    # X.topleft     Y.topleft       1
+            [size[0]/2, -size[1]/2, 1],     # X.topright    Y.topright      1
+            [size[0]/2, size[1]/2, 1],      # X.bottomright Y.bottomright   1
+            [-size[0]/2, size[1]/2, 1]     # X.bottomleft  Y.bottomleft    1
+        ])
+        self.pos_rectVert_orig = self.pos_rectVert.copy()
+
+    def update(self):
+        for i in range(len(self.pos_rectVert)):
+            vec = self.pos_basic @ self.pos_rectVert_orig[i]
+            self.pos_rectVert[i, :] = np.array(vec)
+
+    def draw(self, cam_vec):
+        pygame.draw.polygon(self.surf, (200, 50, 50), self.pos_rectVert[:, 0:2] + cam_vec)

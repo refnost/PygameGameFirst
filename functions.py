@@ -1,4 +1,3 @@
-import pygame
 import math
 from settings import *
 
@@ -29,9 +28,11 @@ def check_global_controls(num: int) -> int:
 
 
 def check_controls(surf: Object):
-    forward_step = 1
-    angle_step = 1
+    forward_step = 4
+    angle_step = 2
     scale_step = 0.1
+    forward = False
+    back = False
     cos_a = math.cos(surf.angle * (math.pi / 180))      # переход в радианы
     sin_a = math.sin(surf.angle * (math.pi / 180))      # переход в радианы
     keys = pygame.key.get_pressed()
@@ -47,11 +48,23 @@ def check_controls(surf: Object):
         surf.angle = 0
     if keys[pygame.K_w]:
         surf.move((forward_step * cos_a, -forward_step * sin_a, 0))     # точки и картинки
+        forward = True
     if keys[pygame.K_s]:
         surf.move((-forward_step * cos_a, forward_step * sin_a, 0))     # точки и картинки
-    if keys[pygame.K_d]:
-        surf.angle = (surf.angle - angle_step) % 360    # картинки
-        surf.rotate(-angle_step)                        # точки
-    if keys[pygame.K_a]:
-        surf.angle = (surf.angle + angle_step) % 360    # картинки
-        surf.rotate(angle_step)                         # точки
+        back = True
+    if forward:
+        if keys[pygame.K_d]:
+            surf.angle = (surf.angle - angle_step) % 360    # картинки
+            surf.rotate(-angle_step)                        # точки
+        if keys[pygame.K_a]:
+            surf.angle = (surf.angle + angle_step) % 360  # картинки
+            surf.rotate(angle_step)  # точки
+    elif back:
+        if keys[pygame.K_d]:
+            surf.angle = (surf.angle + angle_step) % 360  # картинки
+            surf.rotate(angle_step)  # точки
+        if keys[pygame.K_a]:
+            surf.angle = (surf.angle - angle_step) % 360  # картинки
+            surf.rotate(-angle_step)  # точки
+    forward = False
+    back = True

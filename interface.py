@@ -1,18 +1,9 @@
-import numpy as np
-import pygame
 from settings import *
 
 
-class Menu:
+class Menu(InterfaceButtons):
     def __init__(self, screen, pos=(0, 0)):
-        # origin in (0, 0)
-        self.screen = screen
-        self.pos_basic = translate(pos)
-        self.angle = 0
-        self.scale_param = 1
-        self.buttons = []
-        self.create_buttons()
-        self.state = {}
+        super(Menu, self).__init__(screen, pos)
 
     def create_buttons(self):
         screen = self.screen.get_rect().size
@@ -20,22 +11,13 @@ class Menu:
         self.buttons.append(MyButton(self.screen, options_b, (screen[0] / 2, screen[1] / 2), 3, "options"))
         self.buttons.append(MyButton(self.screen, exit_game_b, (screen[0] / 2, screen[1] / 2 + 70), 3, "exit"))
 
-    def update(self, click_mouse: bool):
-        self.state = {}
-        if click_mouse:
-            pos = pygame.mouse.get_pos()
-            for button in self.buttons:
-                state = button.check_col(pos)
-                if state != {}:
-                    self.state = state
-                button.update()
-        else:
-            for button in self.buttons:
-                button.update()
 
-    def draw(self, cam_vec):
-        for button in self.buttons:
-            button.draw(cam_vec)
+class MenuOptions(InterfaceButtons):
+    def __init__(self, screen, pos=(0, 0)):
+        super(MenuOptions, self).__init__(screen, pos)
 
-    def get_states(self):
-        return self.state
+    def create_buttons(self):
+        screen = self.screen.get_rect().size
+        self.buttons.append(MyButton(self.screen, option1_b, (screen[0] * 0.2, screen[1] / 2 - 70), 3, "option1"))
+        self.buttons.append(MyButton(self.screen, option2_b, (screen[0] * 0.2, screen[1] / 2), 3, "option2"))
+        self.buttons.append(MyButton(self.screen, option3_b, (screen[0] * 0.2, screen[1] / 2 + 70), 3, "option3"))
